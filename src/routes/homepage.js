@@ -1,7 +1,8 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import fs from   "fs";
+import auth from "../middleware/auth.js";
 import Banner from "../models/homepage.js";
 
 const router = express.Router();
@@ -17,13 +18,20 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
+    const allowed = /jpeg|jpg|png|webp|svg/;
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowed.test(ext)) cb(null, true);
     else cb(new Error("Only images allowed"));
   },
 });
-router.post("/", upload.single("bannerImage"), async (req, res) => {
+
+router.post("/", auth, upload.any(), (req, res) => {
+  console.log("BODY:", req.body);
+  console.log("FILES:", req.files);
+  res.json({ msg: "Files received", body: req.body, files: req.files });
+});
+
+router.post("/", auth, upload.single("bannerImage"), async (req, res) => {
   try {
     const { aboutText } = req.body;
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
@@ -31,6 +39,7 @@ router.post("/", upload.single("bannerImage"), async (req, res) => {
     if (!aboutText || !imageUrl) {
       return res.status(400).json({ error: "aboutText and bannerImage are required" });
     }
+
     await Banner.deleteMany();
 
     const newBanner = await Banner.create({ aboutText, imageUrl });
