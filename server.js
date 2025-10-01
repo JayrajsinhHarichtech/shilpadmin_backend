@@ -11,6 +11,9 @@ import projectsRoutes from "./src/routes/projects.js";
 import testimonialsRoutes from "./src/routes/testimonials.js";
 import toolsRoutes from "./src/routes/tools.js";
 import aboutUsRoutes from "./src/routes/aboutus.js";
+import commercialRoutes from "./src/routes/commercialRoutes.js";
+import residentialRoutes from "./src/routes/residentialRoutes.js"; 
+import plotsRoutes from "./src/routes/plotsRoutes.js";
 
 dotenv.config();
 
@@ -23,7 +26,6 @@ if (!fs.existsSync(uploadDir)) {
 
 app.use(cors());
 app.use(express.json());
-
 app.use("/uploads", express.static(uploadDir));
 
 app.use("/api/auth", authRoutes);
@@ -32,11 +34,15 @@ app.use("/api/projects", projectsRoutes);
 app.use("/api/testimonials", testimonialsRoutes);
 app.use("/api/tools", toolsRoutes);
 app.use("/api/aboutus", aboutUsRoutes);
+app.use("/api/commercials", commercialRoutes);
+app.use("/api/residentials", residentialRoutes); 
+app.use("/api/plots", plotsRoutes);
 
 const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shilp-admin";
 
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
