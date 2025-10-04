@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const dashboardSchema = new mongoose.Schema({
-  name: String,
-  location: String,
-  image: String,
+const DashboardSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  location: { type: String, required: true },
+  image: { type: String },
 });
 
-export default mongoose.model("Dashboard", dashboardSchema);
+export default mongoose.model("Dashboard", DashboardSchema);
